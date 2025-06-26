@@ -1,0 +1,25 @@
+## Server config
+server:
+  port: 8081
+  servlet:
+    context-path: /
+## Spring config
+spring:
+  application:
+    name: jbang-app
+  threads:
+    virtual:
+      enabled: true
+## Actuator config
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+        exclude: env
+## Logging config
+logging:
+  level:
+    com:
+      example:
+        jbang: INFO
