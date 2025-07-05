@@ -10,6 +10,15 @@ spring:
   threads:
     virtual:
       enabled: true
+  # Run a LLM model locally in docker: docker run -id -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
+  # Pull a model from ollama: docker exec -i ollama ollama pull llama3.2;docker exec -i ollama ollama ls
+  ai:
+    openai:
+      api-key: _
+      chat:
+        base-url: http://localhost:11434
+        options:
+          model: llama3.2
 ## Actuator config
 management:
   endpoints:
