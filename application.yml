@@ -10,15 +10,16 @@ spring:
   threads:
     virtual:
       enabled: true
-  # Run a LLM model locally in docker: docker run -id -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
-  # Pull a model from ollama: docker exec -i ollama ollama pull llama3.2;docker exec -i ollama ollama ls
-  ai:
-    openai:
-      api-key: _
-      chat:
-        base-url: http://localhost:11434
-        options:
-          model: llama3.2
+  datasource:
+    url: jdbc:postgresql://localhost:5433/my_db
+    username: my_user
+    password: secret
+  jpa:
+    open-in-view: false
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
 ## Actuator config
 management:
   endpoints:
@@ -29,6 +30,4 @@ management:
 ## Logging config
 logging:
   level:
-    com:
-      example:
-        jbang: INFO
+    com.example.jbang: DEBUG
