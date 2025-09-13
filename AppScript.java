@@ -40,15 +40,42 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @SpringBootApplication
 public class AppScript {
 
+    private static final Logger log = LoggerFactory.getLogger(AppScript.class);
+
     public static void main(String... args) {
+        log.info("Starting application with args:[{}]", Arrays.toString(args));
+        loadEnv(args);
         SpringApplication.run(AppScript.class, args);
+    }
+
+    private static void loadEnv(String... args) {
+        String filepath = Arrays.stream(args)
+                .filter(arg -> arg.contains(".env") && Files.exists(Paths.get(arg)))
+                .findFirst()
+                .orElse(".env");
+        log.info("Loading environment variables from file:[{}]", filepath);
+        try (Stream<String> lines = Files.lines(Paths.get(filepath))) {
+            lines.filter(line -> !line.trim().isEmpty() && !line.startsWith("#"))
+                    .map(line -> line.trim().split("=", 2))
+                    .filter(parts -> parts.length == 2)
+                    .filter(parts -> !parts[0].trim().isEmpty() && !parts[1].trim().isEmpty())
+                    .forEach(parts -> System.setProperty(parts[0].trim(), parts[1].trim()));
+        } catch (IOException e) {
+            System.err.println("Error reading .env file: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 }
 
@@ -75,12 +102,15 @@ class AppController {
 
     @GetMapping(value = "/data", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getData() {
+        log.info("Invoked getData method");
         return appService.getData();
     }
 }
 
 @Service
 class AppService {
+    private static final Logger log = LoggerFactory.getLogger(AppService.class);
+
     private final AppRepository appRepository;
 
     AppService(AppRepository appRepository) {
@@ -89,6 +119,7 @@ class AppService {
 
     public ResponseEntity<?> getData() {
         List<Bookmark> bookmarks = appRepository.findAll();
+        log.debug("Invoked getData method, found [{}] bookmarks", bookmarks.size());
         return ResponseEntity.ok().body(bookmarks);
     }
 }
