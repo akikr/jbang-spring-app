@@ -23,7 +23,7 @@ services:
   #      retries: 3
   #      start_period: 90s
   #    ## To login into YSQL: docker exec -it yugabyte-db bash -c '/home/yugabyte/bin/ysqlsh -h $(hostname)'
-  #    ## To load schema via SQL scripts: docker exec -it yugabyte-db bash -c "/home/yugabyte/bin/ysqlsh -h $(hostname) -f /docker-entrypoint-initdb.d/*.sql"
+  #    ## To load schema via SQL scripts: docker exec -it yugabyte-db bash -c '/home/yugabyte/bin/ysqlsh -h $(hostname) -f /docker-entrypoint-initdb.d/*.sql'
 
   yugabyte-db:
     image: yugabytedb/yugabyte:latest
@@ -34,9 +34,9 @@ services:
       - "5433:5433"   # YSQL (Postgres API)
       - "9042:9042"   # YCQL (Cassandra API)
     environment:
-      - 'POSTGRES_DB=my_db'
-      - 'POSTGRES_USER=my_user'
-      - 'POSTGRES_PASSWORD=secret'
+      - 'POSTGRES_DB=${DB_NAME}'
+      - 'POSTGRES_USER=${DB_USER}'
+      - 'POSTGRES_PASSWORD=${DB_PASSWORD}'
     command: |
       bash -c "
       # Create database and user as soon as database is up
@@ -72,8 +72,8 @@ services:
       timeout: 10s
       retries: 3
       start_period: 90s
-    ## To login into YSQL: docker exec -it yugabyte-db bash -c "PGPASSWORD=secret /home/yugabyte/bin/ysqlsh -h $(hostname) -U my_user -d my_db"
-    ## To load schema via SQL scripts: docker exec -it yugabyte-db bash -c "PGPASSWORD=secret /home/yugabyte/bin/ysqlsh -h $(hostname) -U my_user -d my_db -f /docker-entrypoint-initdb.d/*.sql"
+    ## To login into YSQL: docker exec -it yugabyte-db bash -c 'PGPASSWORD=secret /home/yugabyte/bin/ysqlsh -h $(hostname) -U my_user -d my_db'
+    ## To load schema via SQL scripts: docker exec -it yugabyte-db bash -c 'PGPASSWORD=secret /home/yugabyte/bin/ysqlsh -h $(hostname) -U my_user -d my_db -f /docker-entrypoint-initdb.d/*.sql'
 
 volumes:
   yugabyte_data:
