@@ -9,7 +9,6 @@
 //DEPS org.postgresql:postgresql:42.6.0
 //DEPS org.springframework.boot:spring-boot-starter-actuator:3.3.0
 //DEPS org.apache.commons:commons-text:1.14.0
-//DEPS org.projectlombok:lombok:1.18.40
 
 package com.example.jbang;
 
@@ -21,10 +20,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,10 +124,7 @@ interface AppRepository extends PagingAndSortingRepository<Bookmark, Long> {
     List<Bookmark> findAll();
 }
 
-@Getter
-@Setter
-@ToString
-@NoArgsConstructor
+
 @Entity
 @Table(name = "bookmarks")
 class Bookmark {
@@ -153,4 +145,46 @@ class Bookmark {
 
     @Column
     private LocalDateTime createdAt;
+
+    @Override
+    public String toString() {
+        return "Bookmark{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", url='" + url + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }
